@@ -43,7 +43,7 @@ void initializeIntArray(char initMode, int *arr, int arrSize)
     {
         for (int i = 0; i < arrSize; i++)
         {
-            arr[i] = rand() % 101;
+            arr[i] = rand() % 201-100;
         }
     }
 }

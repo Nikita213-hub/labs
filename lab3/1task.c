@@ -19,8 +19,8 @@ int main()
     char initMode = getValidatedCharInput("Choose the mode of array initializing (M) manual or (R) random values: ", validModes, 2);
     initializeDoubleArray(initMode, arr, customSize);
     printDoubleArray(arr, customSize);
-    printf("The sum of positive elements of the array = %lf \n", sumElsOfArray(arr, customSize));
-    printf("The max element of the array = %lf", findMax(arr, customSize));
+    printf("The sum of positive elements of the array = %lf. \n", sumElsOfArray(arr, customSize));
+    printf("The max element of the array = %lf.", findMax(arr, customSize));
     return 0;
 }
 
@@ -55,3 +55,5 @@ double findMax(double * arr, int arrSize)
     }
     return maxEl;
 }
+
+
