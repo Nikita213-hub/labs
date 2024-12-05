@@ -3,23 +3,24 @@
 #include "utils.h"
 #include "validators.h"
 
-int addSquares(int * arr, int arrLength);
-void shiftArray(int * arr, int arrLength, int startInd);
+int addSquares(double * arr, int arrLength);
+void shiftArray(double * arr, int arrLength, int startInd);
 
 
 int main()
 {
-    int arrLength = getValidatedIntInput("Insert array length from 1 to 100: ", 1, 100);
-    int arrSize = sizeof(int) *  2*arrLength;
-    int *arr = initIntArray(arrLength, arrSize);
-    printIntArray(arr, arrLength);
+    
+    int arrLength = getAwesomeValidatedIntInput("Insert array length from 1 to 100: ", 1, 100);
+    int arrSize = sizeof(double) *  2*arrLength;
+    double *arr = initDoubleArray(arrLength, arrSize);
+    printDoubleArray(arr, arrLength);
     addSquares(arr, arrLength);
-    printIntArray(arr, arrLength * 2); 
+    printDoubleArray(arr, arrLength * 2); 
     free(arr);
 }                       
 
 
-void shiftArray(int * arr, int arrLength, int startInd)
+void shiftArray(double * arr, int arrLength, int startInd)
 {
     int temp = arr[0];
     for (int i = arrLength*2-1; i >= startInd; i--)
@@ -30,7 +31,7 @@ void shiftArray(int * arr, int arrLength, int startInd)
 
    
     
-int addSquares(int * arr, int arrLength)
+int addSquares(double * arr, int arrLength)
 {
     for (int i = 0; i < arrLength * 2; i+=2)
     {

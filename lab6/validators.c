@@ -2,7 +2,7 @@
 #include <ctype.h>
 #include <conio.h>
 #include <math.h>
-
+#include <limits.h>
 int getValidatedIntInput(const char *message, int min, int max)
 {
     int input;
@@ -46,57 +46,118 @@ void shiftArray(char * arr, int arrSize, int shiftStartInd)
 //     }
 //     // while (getchar() != '\n');  
 // }
-
 int getAwesomeValidatedIntInput(const char *message, int min, int max)
 {
-    // char buffer[500];
-    // int currLen = 0;
-    // int cursor = 0;
-    printf("%s", message);
-    long long input;
-    int cursor = 0;
-    char c;
-    while ((c = _getch()) != '\r')
+    while (1)
     {
-        if(c >= '0' && c <= '9')
+        printf("%s", message);
+        int input = 0;
+        char a;
+        int isAnyErrorsInInput = 0;
+        int valueLen = 0;
+        short sign = 1;
+        int rawBufferLen = 0;
+        while ((a = getchar()) != '\n')
         {
-            input = input * 10 + (c-'0');
-            putch(c);
-            cursor++;
-        }
-        if(c == '\b')
-        {
-            if(cursor > 0)
+            rawBufferLen++;
+            if(valueLen == 0 && a == '-')
             {
-                printf("\b \b");
-                input /= 10;
-                cursor--;
+                sign = -1;
+                valueLen++;
+                continue;
+            }
+            if(a < '0' || a > '9')
+            {
+                isAnyErrorsInInput = 1;
+                // while((getchar()) != '\n');
+                break;
+            }
+            else
+            {
+                if (sign == 1 && input > (INT_MAX - '0') / 10) {
+                    // printf("Value overflow \n");
+                    isAnyErrorsInInput = 1;
+                    break;
+                }
+                if (sign == -1 && input < (INT_MIN + '0') / 10) {
+                    // printf("Value overfplow \n");
+                    isAnyErrorsInInput = 1;
+                    break;
+                }
+                valueLen++;
+                input = input * 10 + (a-'0');
             }
         }
-        // if (c == 0 || c == 224)
-        // {
-        //     c = _getch();
-        //     if (c == 75)
-        //     {
-        //         if (cursor > 0)
-        //         {
-        //             cursor--;
-        //             printf("\b");
-        //         }
-        //     }
-        //     else if (c == 77)
-        //     {
-        //         if (cursor < currLen)
-        //         {
-        //             printf("%c", buffer[cursor]); // Move cursor right visually
-        //             cursor++;
-        //         }
-        //     }
-        // }
+        if(sign == -1 && valueLen == 1)
+        {
+            isAnyErrorsInInput = 1;
+            rawBufferLen--;
+        }
+        if(!isAnyErrorsInInput && valueLen && (input * sign >= min && input * sign <= max))
+        {
+            return input * sign;
+        }
+        else {
+            input = 0;
+            printf("Incorrect input \n");
+        }
+        if(rawBufferLen > 0 && isAnyErrorsInInput)
+        {
+            while((getchar()) != '\n');
+        }
     }
-    printf("\n");
-    printf("%lld", input);
+    
 }
+
+int validateIntInp(const char *message ,int min, int max)
+{
+    long long input;
+    char c;
+    while(1)
+    {
+        printf("%s", message);
+        c = getchar();
+        if(c == '\n' || c == '\r')
+        {
+            break;
+        }
+        if(isdigit(c))
+        {
+            input = input * 10 + (c-'0');
+        }
+        else {
+            while(getchar() != '\n');
+            printf("Invalid input. Please enter an integer between %d and %d.\n", min, max);
+
+        }
+    }
+    // do {
+    //     if(isdigit(c))
+    //     {
+    //         input = input * 10 + (c-'0');
+    //     }
+    //     else {
+    //         while(getchar() != '\n');
+    //         printf("Invalid input. Please enter an integer between %d and %d.\n", min, max);
+
+    //     }
+    // } while ((c = getchar()) != '\n' && c != '\r');
+    // while ((c = getchar()) != '\n' && c != '\r')
+    // {
+    //     printf("%s", message);
+    //     if(isdigit(c))
+    //     {
+    //         input = input * 10 + (c-'0');
+    //     }
+    //     else {
+    //         while(getchar() != '\n');
+    //         printf("Invalid input. Please enter an integer between %d and %d.\n", min, max);
+
+    //     }
+    // }
+    return input;
+}
+
 
 char getValidatedCharInput(const char *message, char validChars[], int validCharsLength)
 {
@@ -112,6 +173,7 @@ char getValidatedCharInput(const char *message, char validChars[], int validChar
             {
                 if (input == toupper(validChars[i])) 
                 {
+                    while (getchar() != '\n');
                     return input;
                 }
             }

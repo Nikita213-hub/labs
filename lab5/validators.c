@@ -2,7 +2,11 @@
 #include <ctype.h>
 #include <conio.h>
 #include <math.h>
-
+#include <stdlib.h>
+#include <limits.h>
+#include <stdbool.h>
+#include <stdarg.h>
+#include <string.h>
 int getValidatedIntInput(const char *message, int min, int max)
 {
     int input;
@@ -23,119 +27,65 @@ int getValidatedIntInput(const char *message, int min, int max)
 
 int getAwesomeValidatedIntInput(const char *message, int min, int max)
 {
-    // char buffer[500];
-    // int currLen = 0;
-    // int cursor = 0;
-    printf("%s", message);
-    // while (1) 
-    // {
-    //     long long input;
-    //     int cursor = 0;
-    //     char c;
-    //     // printf("%s", message);
-    //     if (input >= min && input <= max) 
-    //     {
-    //         return input;
-    //     } 
-    //     else 
-    //     {
-    //         printf("Invalid input. Please enter an integer between %d and %d.\n", min, max);
-    //         while (getchar() != '\n'); 
-    //     }
-    // }
-    int input = 0;
-    char c;
-    int cursor = 0;
-    while ((c = _getch()) != '\r' && c != EOF)
+    while (1)
     {
-            if(c >= '0' && c <= '9')
+        printf("%s", message);
+        int input = 0;
+        char a;
+        int isAnyErrorsInInput = 0;
+        int valueLen = 0;
+        short sign = 1;
+        int rawBufferLen = 0;
+        while ((a = getchar()) != '\n')
+        {
+            rawBufferLen++;
+            if(valueLen == 0 && a == '-')
             {
-                input = input * 10 + (c-'0');
-                putch(c);
-                cursor++;
+                sign = -1;
+                valueLen++;
+                continue;
             }
-            if(c == '\b')
+            if(a < '0' || a > '9')
             {
-                if(cursor > 0)
-                {
-                    printf("\b \b");
-                    input /= 10;
-                    cursor--;
+                isAnyErrorsInInput = 1;
+                // while((getchar()) != '\n');
+                break;
+            }
+            else
+            {
+                if (sign == 1 && input > (INT_MAX - '0') / 10) {
+                    // printf("Value overflow \n");
+                    isAnyErrorsInInput = 1;
+                    break;
                 }
+                if (sign == -1 && input < (INT_MIN + '0') / 10) {
+                    // printf("Value overfplow \n");
+                    isAnyErrorsInInput = 1;
+                    break;
+                }
+                valueLen++;
+                input = input * 10 + (a-'0');
             }
-            // if (c == 0 || c == 224)
-            // {
-            //     c = _getch();
-            //     if (c == 75)
-            //     {
-            //         if (cursor > 0)
-            //         {
-            //             cursor--;
-            //             printf("\b");
-            //         }
-            //     }
-            //     else if (c == 77)
-            //     {
-            //         if (cursor < currLen)
-            //         {
-            //             printf("%c", buffer[cursor]); // Move cursor right visually
-            //             cursor++;
-            //         }
-            //     }
-            // }
+        }
+        if(sign == -1 && valueLen == 1)
+        {
+            isAnyErrorsInInput = 1;
+            rawBufferLen--;
+        }
+        if(!isAnyErrorsInInput && valueLen && (input * sign >= min && input * sign <= max))
+        {
+            return input * sign;
+        }
+        else {
+            input = 0;
+            printf("Incorrect input \n");
+        }
+        if(rawBufferLen > 0 && isAnyErrorsInInput)
+        {
+            while((getchar()) != '\n');
+        }
     }
-    if(input > min && input < max)
-    {
-        return input;
-    }
-
-    printf("\n");
-        
-    // while ((c = _getch()) != '\r')
-    // {
-    //     if(c >= '0' && c <= '9')
-    //     {
-    //         input = input * 10 + (c-'0');
-    //         putch(c);
-    //         cursor++;
-    //     }
-    //     if(c == '\b')
-    //     {
-    //         if(cursor > 0)
-    //         {
-    //             printf("\b \b");
-    //             input /= 10;
-    //             cursor--;
-    //         }
-    //     }
-    //     // if (c == 0 || c == 224)
-    //     // {
-    //     //     c = _getch();
-    //     //     if (c == 75)
-    //     //     {
-    //     //         if (cursor > 0)
-    //     //         {
-    //     //             cursor--;
-    //     //             printf("\b");
-    //     //         }
-    //     //     }
-    //     //     else if (c == 77)
-    //     //     {
-    //     //         if (cursor < currLen)
-    //     //         {
-    //     //             printf("%c", buffer[cursor]); // Move cursor right visually
-    //     //             cursor++;
-    //     //         }
-    //     //     }
-    //     // }
-    // }
-    // if (input > min && input < max)
-    // {
-    //     return input;
-    // }
     
-    // printf("\n");
-    // printf("%lld", input);
 }
 
 char getValidatedCharInput(const char *message, char validChars[], int validCharsLength)
@@ -145,13 +95,14 @@ char getValidatedCharInput(const char *message, char validChars[], int validChar
     while (1) 
     {
         printf("%s", message);
-        if (scanf(" %c", &input) == 1) 
+        if (scanf("%c", &input) == 1) 
         {
             input = toupper(input);  
             for (int i = 0; i < validCharsLength; i++) 
             {
                 if (input == toupper(validChars[i])) 
                 {
+                    while (getchar() != '\n');
                     return input;
                 }
             }

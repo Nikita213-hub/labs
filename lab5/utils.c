@@ -14,10 +14,10 @@ int * initIntArray(int arrLength, int arrSize)
     {
         for (int i = 0; i < arrLength; i++)
         {
-            double val;
+            int val;
             char prompt[50];
             sprintf(prompt, "Insert value for element %d: ", i);
-            val = getValidatedDoubleInput(prompt);
+            val = getAwesomeValidatedIntInput(prompt, -100, 100);
             ptr[i] = val;
         }
         
@@ -32,6 +32,35 @@ int * initIntArray(int arrLength, int arrSize)
     return ptr;
 }
 
+double * initDoubleArray(int arrLength, int arrSize)
+{
+    srand(time(NULL));
+    char validChars[2] = {'M', 'R'};
+    char initMode = getValidatedCharInput("Choose initialization type manual (M) or with random values (R): ", validChars, 2);
+    double * ptr = malloc(arrSize);
+    if(toupper(initMode) == 'M')
+    {
+        for (int i = 0; i < arrLength; i++)
+        {
+            double val;
+            char prompt[50];
+            sprintf(prompt, "Insert value for element %d: ", i);
+            val = getValidatedDoubleInput(prompt);
+            ptr[i] = val;
+        }
+        
+    }
+    else
+    {
+        for (int i = 0; i < arrLength; i++)
+        {
+            ptr[i] = (rand() % 101);
+        }
+    }
+    return ptr;
+}
+
+
 void printIntArray(int * arr, int arrSize)
 {
     printf("[");
@@ -44,6 +73,24 @@ void printIntArray(int * arr, int arrSize)
         else
         {
             printf("%d,", arr[i]);
+        }
+        
+    }
+    printf("] \n");
+}
+
+void printDoubleArray(double * arr, int arrSize)
+{
+    printf("[");
+    for (int i = 0; i < arrSize; i++)
+    {
+        if(i == arrSize - 1)
+        {
+            printf("%.2lf", arr[i]);
+        }
+        else
+        {
+            printf("%.2lf, ", arr[i]);
         }
         
     }

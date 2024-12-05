@@ -22,8 +22,8 @@ int main()
 
     int **newPtrsArr = malloc(sizeof(int *) * countOfRows); 
 
-
-    removeElFromArray(newPtrsArr, ptrsArr, 2, countOfRows, rowsLensArr);
+    int k = getAwesomeValidatedIntInput("Input k value: ", 1, 100);
+    removeElFromArray(newPtrsArr, ptrsArr, k, countOfRows, rowsLensArr);
     printf("new two dimensional arr: \n");
     printTwoDemArr(newPtrsArr, countOfRows, rowsLensArr);
 
@@ -87,7 +87,7 @@ void initTwoDemArr(int ***ptrsArr, int countOfRows, int *rowsLensArr)
         int input;
         while (1)
         {
-            input = getValidatedIntInput("Input any int val: ", -1, 100);
+            input = getAwesomeValidatedIntInput("Input any int val: ", -1, 100);
             countOfEls++;
             (*ptrsArr)[i] = realloc((*ptrsArr)[i], sizeof(int) * countOfEls);
 

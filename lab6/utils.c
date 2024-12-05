@@ -6,7 +6,7 @@
 
 int * initIntArray(int arrLength, int arrSize)
 {
-    srand(time(NULL))
+    srand(time(NULL));
     char validChars[2] = {'M', 'R'};
     char initMode = getValidatedCharInput("Choose initialization type manual (M) or with random values (R): ", validChars, 2);
     int * ptr = malloc(arrSize);
@@ -14,10 +14,10 @@ int * initIntArray(int arrLength, int arrSize)
     {
         for (int i = 0; i < arrLength; i++)
         {
-            double val;
+            int val;
             char prompt[50];
             sprintf(prompt, "Insert value for element %d: ", i);
-            val = getValidatedDoubleInput(prompt);
+            val = getAwesomeValidatedIntInput(prompt, -100, 100);
             ptr[i] = val;
         }
         

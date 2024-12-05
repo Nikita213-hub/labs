@@ -39,9 +39,8 @@ void selectionSort(int * arr, int arrLength)
 
 int main()
 {
-    getAwesomeValidatedIntInput("Input smth: ", 0, 10);
-    // int arrLen = getValidatedIntInput("Input array length: ", 1, 500);
-    // int * arr = initIntArray(arrLen, sizeof(int) * arrLen);
-    // selectionSort(arr, arrLen);
-    // printIntArray(arr, arrLen);
+    int arrLen = getAwesomeValidatedIntInput("Input array length: ", 1, 500);
+    int * arr = initIntArray(arrLen, sizeof(int) * arrLen);
+    selectionSort(arr, arrLen);
+    printIntArray(arr, arrLen);
 }

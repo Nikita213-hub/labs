@@ -15,8 +15,8 @@ void freeMatrix(int ** matrix, int countOfRows);
 int main()
 {
     srand(time(NULL));
-    int countOfRows = getValidatedIntInput("Input count of rows: ", 1, 100);
-    int countOfCols = getValidatedIntInput("Input count of cols: ", 1, 100);
+    int countOfRows = getAwesomeValidatedIntInput("Input count of rows: ", 1, 100);
+    int countOfCols = getAwesomeValidatedIntInput("Input count of cols: ", 1, 100);
     char validChars[2] = {'M', 'R'};
     char initMode = getValidatedCharInput("Choose initialization type manual (M) or with random values (R): ", validChars, 2);
     int rowsLensArr[countOfRows];
@@ -94,7 +94,7 @@ void initMatrix(int *** matrix, int countOfRows, int countOfCols, int * rowsLens
             {
                 char message[30];
                 sprintf(message, "Insert value of matrix[%d][%d]: ", i, j);
-                (*matrix)[i][j] = getValidatedIntInput(message, -100, 100);
+                (*matrix)[i][j] = getAwesomeValidatedIntInput(message, -100, 100);
             }
         }
         else
