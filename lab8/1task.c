@@ -12,5 +12,16 @@ int main() {
     }
     fclose(fp);
 
+    fp = fopen("a.bin", "rb");
+    fseek(fp, 0, SEEK_END);
+    int count = ftell(fp) / sizeof(int);
+    fseek(fp, 0, SEEK_END);
+    int temp;
+    printf("Numbers from file: \n");
+    for (int i = 0; i < count; i++) {
+        fread(&temp, sizeof(int), 1, fp);
+        printf("%d ", temp);
+    }
+
     return 0;
 }
