@@ -1,18 +1,29 @@
 #include <stdio.h>
+#include "util.h"
+#include "validators.h"
 
 int main() {
     FILE *fp;
+    char fileName[256];
+    printf("Enter bin file's name:\n");
+    getFileName(fileName);
 
-    fp = fopen("c.bin", "wb");
+    fp = fopen(fileName, "wb");
     int numbersCount, num = 0;
-    printf("Enter numbers (end with -1): ");
-    while (scanf("%d", &num) == 1 && num != -1) 
+    printf("Enter numbers (end with -1)\n");
+    while (1) 
     {
+        num = getValidatedIntInput("Insert integer value: ");
+        if (num == -1) {
+            break;
+        }
         fwrite(&num, sizeof(int), 1, fp);
         numbersCount++;
     }
     fclose(fp);
-    fp = fopen("c.bin", "rb+");
+    
+
+    fp = fopen(fileName, "rb+");
     printf("Insert k: ");
     int k;
     scanf("%d", &k);
