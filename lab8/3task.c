@@ -2,6 +2,66 @@
 #include "util.h"
 #include "validators.h"
 
+
+#define BUFFER_SIZE 4096 
+
+void swapBlocks(FILE *fp, int posA, int posB, int chunkLen) {
+    if (posA == posB || chunkLen <= 0) return;
+
+    int bufferA[BUFFER_SIZE];
+    int bufferB[BUFFER_SIZE];
+    int remaining = chunkLen;
+
+    while (remaining > 0) {
+        int chunk = (remaining > BUFFER_SIZE) ? BUFFER_SIZE : remaining;
+        
+
+        fseek(fp, posA * sizeof(int), SEEK_SET);
+        fread(bufferA, 1, chunk * sizeof(int), fp);
+        
+
+        fseek(fp, posB * sizeof(int), SEEK_SET);
+        fread(bufferB, 1, chunk * sizeof(int), fp);
+        
+ 
+        fseek(fp, posA * sizeof(int), SEEK_SET);
+        fwrite(bufferB, 1, chunk * sizeof(int), fp);
+        
+        fseek(fp, posB * sizeof(int), SEEK_SET);
+        fwrite(bufferA, 1, chunk * sizeof(int), fp);
+
+        posA += chunk;
+        posB += chunk;
+        remaining -= chunk;
+    }
+}
+
+void cyclicShift(FILE *fp, int rotdist) {
+
+    fseek(fp, 0, SEEK_END);
+    int intsCount = ftell(fp) / sizeof(int);
+    fseek(fp, 0, SEEK_SET);
+
+    if (rotdist == 0 || rotdist == intsCount) return;
+ 
+    rotdist %= intsCount;
+
+    int a = rotdist;
+    int bl = intsCount - rotdist;
+    int br = rotdist;
+
+    while (a != bl) {
+        if (a > bl) {
+            swapBlocks(fp, br - a, br, bl); 
+            a -= bl;
+        } else {
+            swapBlocks(fp, br - a, br + bl - a, a);
+            bl -= a;
+        }
+    }
+    swapBlocks(fp, br - a, br, a);
+}
+
 int main() {
     FILE *fp;
     char fileName[256];
@@ -9,7 +69,8 @@ int main() {
     getFileName(fileName);
 
     fp = fopen(fileName, "wb");
-    int numbersCount, num = 0;
+    int numbersCount = 0;
+    int num;
     printf("Enter numbers (end with -1)\n");
     while (1) 
     {
@@ -21,47 +82,15 @@ int main() {
         numbersCount++;
     }
     fclose(fp);
-    
+
+    int rShiftVal = getValidatedIntInput("Enter k(shift value): ");
+    int lShift = numbersCount-rShiftVal;
 
     fp = fopen(fileName, "rb+");
-    printf("Insert k: ");
-    int k;
-    scanf("%d", &k);
-    int shiftVal = 0;
-    printf("NC is %d\n", 2%4);
-    k%=numbersCount;
-    printf("K is %d\n", k);
-    if (k==0)
-    {
-        printf("no need\n");
-    }
     int temp;
+    cyclicShift(fp, lShift);
     fseek(fp, 0, SEEK_SET);
-    int offset = 0;
-    int originalNumbersCount = numbersCount;
-    for (int i = k; i > 0; i--) {
-        fseek(fp, -(i + offset) * sizeof(int), SEEK_END);
-        fread(&temp, sizeof(int), 1, fp);
-        printf("trace1 %d\n", temp);
-        fseek(fp, 0, SEEK_END);
-        fwrite(&temp, sizeof(int), 1, fp);
-        offset++;
-        numbersCount++;
-    }
-    for (int i = 0; i < originalNumbersCount-k; i++) {
-        fseek(fp, -(i+offset+k+1) * sizeof(int), SEEK_END);
-        fread(&temp, sizeof(int), 1, fp);
-        fseek(fp, -(i+offset+1) * sizeof(int), SEEK_END);
-        fwrite(&temp, sizeof(int), 1, fp);
-        printf("TEMP TRACE: %d\n", temp);
-    }
-    // while(numbersCount > 0) {
-    //     fread(&temp, sizeof(int), 1, fp);
-    //     fseek(fp, -sizeof(int), SEEK_CUR);
-    //     fwrite(&temp, sizeof(int), 1, fp);
-    // }
-    fseek(fp, 0, SEEK_SET);
-    for (int i = 0; i < numbersCount; i++) {
+    for (int i = 0; i < numbersCount; i++) { 
         fread(&temp, sizeof(int), 1, fp);
         printf("%d ", temp);
     }
