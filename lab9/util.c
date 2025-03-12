@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 void addFileType(char * str) {
     int len = strlen(str);
@@ -15,7 +16,7 @@ void getFileName(char * str) {
 }
 
 char * getFileNameFromCmdArgs(int argCount, char * argVals[]) {
-    char * fileName;
+    char * fileName = malloc(100 * sizeof(char));
     if (argCount < 2) {
         printf("Insert file name: ");
         getFileName(fileName);
