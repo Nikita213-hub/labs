@@ -4,7 +4,17 @@
 #include "validators.c"
 #include "bookStorage.c"
 
+union code {
+    int n;
+    struct {
+        unsigned a0:1;
+    }bit;
+};
+
 void firstTask() {
+    union code c;
+    c.n = 10;
+    printf("%d", c.bit.a0);
     int num = getValidatedIntInput("Insert any integer: ");
     if (num & 1) {
         printf("The number is odd\n");

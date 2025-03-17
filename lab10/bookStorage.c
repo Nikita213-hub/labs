@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "validators.h"
 
 void getStringInput(char * str, int size) {
     fgets(str, size, stdin);
@@ -102,20 +103,21 @@ Book * getBookFromUser() {
     for(enum BookFieldsOps bookField = 0; bookField < bookFieldsCount; bookField++) {
         printf("Insert %s: ", bookFields[bookField]);
         char * str = malloc(sizeof(char) * 256);
-        getStringInput(str, 256);
         switch (bookField)
         {
         case AUTHOR_NAME:
+            getStringInput(str, 256);
             newBook->info.authorName = str;
             break;
         case BOOK_NAME:
+            getStringInput(str, 256);
             newBook->name = str;
             break;
         case COUNT_OF_PAGES:
-            newBook->pagesCount = atoi(str);
+            newBook->pagesCount = getValidatedIntInput("");
             break;
         case COUNT_OF_VOLUMES:
-            newBook->info.volumeCount = atoi(str);
+            newBook->info.volumeCount = getValidatedIntInput("");
             break;
         default:
             break;
