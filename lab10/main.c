@@ -7,16 +7,15 @@
 union code {
     int n;
     struct {
-        unsigned a0:1;
+        unsigned int a0:1;
     }bit;
 };
 
-void firstTask() {
+void checkIsOdd() {
     union code c;
-    c.n = 10;
-    printf("%d", c.bit.a0);
-    int num = getValidatedIntInput("Insert any integer: ");
-    if (num & 1) {
+    //int num = getValidatedIntInput("Insert any integer: ");
+    c.n = getValidatedIntInput("Insert any integer: ");
+    if (c.n & 1) {
         printf("The number is odd\n");
     }
     else {
@@ -24,13 +23,10 @@ void firstTask() {
     }
 } 
 
-void secondTask() {
-    runStorage();
-}
-
 int main() {
+    printf("%d", 9&5);
     char validChars[2] = {'1', '2'};
     char choice = getValidatedCharInput("Choose the task: 1-first taks, 2 - second task: ", validChars, 2);
-    if (choice == '1') firstTask();
-    else secondTask();
+    if (choice == '1') checkIsOdd();
+    else runStorage();
 }

@@ -171,7 +171,6 @@ Books * deleteBooks(Books * books, Books * booksToDel) {
         }
     }
     freeBooks(books);
-    freeBooks(booksToDel);
     return stayedBooks;
 }
 
@@ -198,6 +197,10 @@ void runStorage() {
             case 2: {
                 int pages = getValidatedIntInput("Enter page count to delete: ");
                 Books *toDelete = findBooksByPagesCount(books, pages);
+                if (toDelete->len < 1) {
+                    printf("No books were found\n");
+                    return;
+                }
                 books = deleteBooks(books, toDelete);
                 printf("%d books deleted\n", toDelete->len);
                 break;
