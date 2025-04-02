@@ -18,15 +18,6 @@ NumsStack * newNumStack() {
     return newStack;
 }
 
-// void printNumStack(NumsStack * stack) {
-//     Node * temp = stack->head;
-//     while(temp != NULL) {
-//         printf("%c", temp->val);
-//         temp = temp->next;        
-//     }
-//     printf("\n");
-// }
-
 void push(float v, NumsStack * stack) {
     Node * newOp = malloc(sizeof(Node));
     newOp->val = v;
@@ -106,9 +97,6 @@ float calcWithRPN(char * postfix) {
             push(num, stack);
             //postfix++;
         } else {
-            // if(*postfix != ' ' && !isDigitOrOp(*(postfix+1))) {
-            //     isPrevOp=1;
-            // }
             float a;
             float b;
             switch (*postfix)
@@ -118,7 +106,6 @@ float calcWithRPN(char * postfix) {
                 b = pop(stack);
                 push(a+b, stack);
                 postfix++;
-                //isPrevOp=1;
                 break;
 
             case '-':
@@ -126,7 +113,6 @@ float calcWithRPN(char * postfix) {
                 b = pop(stack);
                 push(b-a, stack);
                 postfix++;
-                //isPrevOp=1;
                 break;
             
             case '*':
@@ -134,7 +120,6 @@ float calcWithRPN(char * postfix) {
                 b = pop(stack);
                 push(a*b, stack);
                 postfix++;
-                //isPrevOp=1;
                 break;
             
             case '/':
@@ -142,7 +127,6 @@ float calcWithRPN(char * postfix) {
                 b = pop(stack);
                 push(b/a, stack);
                 postfix++;
-                //isPrevOp=1;
                 break;
             default:
                 postfix++;
@@ -150,7 +134,7 @@ float calcWithRPN(char * postfix) {
             }
         }
     }
-    return stack->head->val;
+    float res = stack->head->val;
+    free(stack);
+    return res;
 }
-
-

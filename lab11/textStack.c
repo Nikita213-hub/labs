@@ -1,43 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// (2+3)*3+2
-
-// stack: 
-// postfix: 23+3*2+
-
-// typedef struct {
-//     float val;
-//     Node * next;
-// }Node;
-
-// typedef struct {
-//     Node * head;
-//     int len;
-// }NumsStack;
-
-// NumsStack * newStack() {
-//     NumsStack * newStack = malloc(sizeof(NumsStack));
-//     newStack->head = malloc(sizeof(Node));
-//     newStack->len = 0;
-//     return newStack;
-// }
-
-// void push(float v, NumsStack * stack) {
-//     Node * newNode = malloc(sizeof(Node));
-//     newNode->val = v;
-//     newNode->next = stack->head;
-//     stack->head = newNode;
-// }
-
-// float pop(NumsStack * stack) {
-//     Node* temp = stack->head;
-//     stack->head = stack->head->next;
-//     float poppedVal = temp->val;
-//     free(temp);
-//     return poppedVal;
-// }
-
 
 typedef struct Node{
     char val;
@@ -49,7 +12,7 @@ typedef struct {
     int len;
 }OpsStack;
 
-OpsStack * newStack() {
+OpsStack * newCharStack() {
     OpsStack * newStack = malloc(sizeof(OpsStack));
     newStack->head = malloc(sizeof(Node));
     newStack->len = 0;
@@ -97,7 +60,7 @@ char popOp(OpsStack * stack) {
         temp = stack->head;
         stack->head = temp->next;
         char poppedChar = temp->val;
-        //free(temp);
+        free(temp);
         stack->len--;
         return poppedChar;
     }
@@ -136,8 +99,9 @@ short getPrecedence(char op) {
 }
 
 
-void convertInfixToPostfix(char * infix, char * postfix) {
-    OpsStack * stack = newStack();
+int convertInfixToPostfix(char * infix, char * postfix) {
+    int isErr = 0;
+    OpsStack * stack = newCharStack();
     int isPrevOp = 1;
     while(*infix != '\0') {
         if(*infix == ' ') {
@@ -155,7 +119,6 @@ void convertInfixToPostfix(char * infix, char * postfix) {
                 infix++;
                 continue;
             }
-            isPrevOp = 1;
             *postfix = ' ';
             postfix++;
             Node *headNode = stack->head;
@@ -168,6 +131,10 @@ void convertInfixToPostfix(char * infix, char * postfix) {
             case ')':
                 char popped;
                 while ((popped = popOp(stack)) != '(') {
+                    if(popped == -1) {
+                        isErr = 1;
+                        return isErr;
+                    } 
                     *postfix = popped;
                     postfix++;
                 }
@@ -175,6 +142,10 @@ void convertInfixToPostfix(char * infix, char * postfix) {
                 infix++;
                 break;
             default:
+                if(isPrevOp) {
+                    isErr = 1;
+                    return isErr;
+                }
                 while (stack->head != NULL && 
                     getPrecedence(*infix) <= getPrecedence(stack->head->val)) {
                     *postfix = popOp(stack);
@@ -184,46 +155,22 @@ void convertInfixToPostfix(char * infix, char * postfix) {
                 }
                 pushOp(*infix, stack);
                 infix++;
+                isPrevOp = 1;
                 break;
-                // if (!headNode || getPrecedence(*infix) > getPrecedence(headNode->val)) {
-                //     pushOp(*infix, stack);
-                // } else {
-                //     while(getPrecedence(*infix) < getPrecedence(headNode->val)) {
-                //         *postfix = popOp(stack);
-                //         postfix++;
-                //     }
-                //     continue;
-                // }
-                // break;
             }
-            // if(*infix == '(') {
-            //     pushOp(*infix, stack);
-            // }
-            // if(*infix == ')') {
-            //     char popped = popOp(stack);
-            //     while(popped != '(') {
-            //         printf("%c", popped);
-            //         *postfix = popped;
-            //         postfix++;
-            //         popped = popOp(stack);
-            //     }
-            //     continue;
-            // } else if (!headNode || getPrecedence(*infix) > getPrecedence(headNode->val)) {
-            //     pushOp(*infix, stack);
-            // } else {
-            //     while(getPrecedence(*infix) < getPrecedence(headNode->val)) {
-            //         *postfix = popOp(stack);
-            //         postfix++;
-            //     }
-            //     continue;
-            // }
         }
-        // infix++;
-        // postfix++;
+    }
+    if(isPrevOp) {
+        isErr = 1;
+        return isErr;
     }
     if(stack->len > 0) {
         while(stack->len > 0) {
             *postfix = popOp(stack);
+            if(*postfix == '(') {
+                isErr = 1;
+                return isErr;
+            }
             postfix++;
         }
     }
