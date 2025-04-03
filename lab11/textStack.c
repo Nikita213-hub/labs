@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-
+#include "Errors.h"
 
 typedef struct Node{
     char val;
@@ -46,8 +46,6 @@ char popOp(OpsStack * stack) {
     if (stack->head == NULL) {
         return -1;
     }
-    //printStack(stack);
-    // printStack(stack);
     Node * temp;
     if (stack->head->next == NULL) {
         temp = stack->head;
@@ -98,12 +96,20 @@ short getPrecedence(char op) {
     }
 }
 
+static int isOperator(char c) {
+    return c == '+' || c == '-' || c == '*' || c == '/';
+}
 
-int convertInfixToPostfix(char * infix, char * postfix) {
-    int isErr = 0;
+
+errorsList*  convertInfixToPostfix(char * infix, char * postfix, int currentLine) {
+    errorsList *errList = newErrorsList();
     OpsStack * stack = newCharStack();
     int isPrevOp = 1;
+    char *originalStart = infix;
+    int currentIndex = 0;
+    char * errText = malloc(sizeof(char) * 1024);
     while(*infix != '\0') {
+        currentIndex = infix - originalStart;
         if(*infix == ' ') {
             infix++;
             continue;
@@ -132,8 +138,7 @@ int convertInfixToPostfix(char * infix, char * postfix) {
                 char popped;
                 while ((popped = popOp(stack)) != '(') {
                     if(popped == -1) {
-                        isErr = 1;
-                        return isErr;
+                        errList = addError(errList, "Mismatched closing parenthesis", currentIndex, currentLine);
                     } 
                     *postfix = popped;
                     postfix++;
@@ -143,8 +148,10 @@ int convertInfixToPostfix(char * infix, char * postfix) {
                 break;
             default:
                 if(isPrevOp) {
-                    isErr = 1;
-                    return isErr;
+                    errList = addError(errList, "Invalid operation place", currentIndex, currentLine);
+                }
+                if (!isOperator(*infix)) {
+                    errList = addError(errList, "Invalid symbol", currentIndex, currentLine);
                 }
                 while (stack->head != NULL && 
                     getPrecedence(*infix) <= getPrecedence(stack->head->val)) {
@@ -160,20 +167,20 @@ int convertInfixToPostfix(char * infix, char * postfix) {
             }
         }
     }
+    currentIndex++;
     if(isPrevOp) {
-        isErr = 1;
-        return isErr;
+        errList = addError(errList, "Invalid operation place", currentIndex, currentLine);
     }
     if(stack->len > 0) {
         while(stack->len > 0) {
             *postfix = popOp(stack);
             if(*postfix == '(') {
-                isErr = 1;
-                return isErr;
+                errList = addError(errList, "Mismatched closing parenthesis", currentIndex, currentLine);
             }
             postfix++;
         }
     }
     *postfix='\0';
     free(stack);
+    return errList;
 }

@@ -6,6 +6,7 @@
 #include "RPNalg.h"
 #include "util.h"
 #include "txtReaderWriter.h"
+#include "Errors.h"
 
 int sumStack(Stack * stack) {
     Node*temp = stack->Head;
@@ -88,10 +89,10 @@ int main() {
         int currLine = 0;
         while(readLine(fpExpr, line)) {
             currLine++;
-            int err = convertInfixToPostfix(line, postfixStr);
-            if (err) {
-                printf("smth went wrong in line # %d\n", currLine);
-                return 1;
+            errorsList * errors = convertInfixToPostfix(line, postfixStr, currLine);
+            if (isErrors(errors)) {
+                printErrors(errors);
+                continue;
             }
             float t = calcWithRPN(postfixStr);
             writeLine(fpRes, t);

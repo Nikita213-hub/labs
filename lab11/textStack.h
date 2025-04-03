@@ -1,4 +1,5 @@
 #ifndef STACKTEXT_H
 #define STACKTEXT_H
-int convertInfixToPostfix(char * infix, char * postfix);
+#include "Errors.h"
+errorsList*  convertInfixToPostfix(char * infix, char * postfix, int currentLine);
 #endif
