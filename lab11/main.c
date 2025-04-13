@@ -9,12 +9,12 @@
 #include "Errors.h"
 
 int sumStack(Stack * stack) {
-    Node*temp = stack->Head;
+    Node*temp = Pop(stack);
     int sum = 0;
-    while(temp->Prev) {
+    while(temp != NULL) {
         sum+=temp->Val;
         printf("Val summed: %d\n", temp->Val);
-        temp = temp->Prev;
+        temp = Pop(stack);
     }
     return sum;
 }
@@ -61,6 +61,7 @@ int main() {
         Stack * stack = newStack();
         FillStack(stack);
         printf("Sum of stack els = %d\n", sumStack(stack));
+        freeStack(stack);
         break;
     case '2':
         Stack * stacks1 = newStack();

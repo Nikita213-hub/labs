@@ -24,9 +24,20 @@ Stack * newStack() {
     Node * head = malloc(sizeof(Node));
     Stack * stack = malloc(sizeof(Stack));
     stack->Head = head;
+    stack->Head->Prev = NULL;
     stack->Len = 0;
     stack->MaxLen = getValidatedIntInput("Input max len of stack: ");
     return stack;
+}
+
+void freeStack(Stack * stack) {
+    Node * el = stack->Head;
+    while(el != NULL) {
+        el = el->Prev;
+        free(el);
+    }
+    free(stack);
+    return;
 }
 
 void Push(int val, Stack * stack) {
@@ -44,7 +55,6 @@ void Push(int val, Stack * stack) {
 
 Node * Pop(Stack * stack) {
     if(stack->Head->Prev == NULL) {
-        printf("Error: Stack is already empty\n");
         return NULL;
     }
     Node*temp = stack->Head;

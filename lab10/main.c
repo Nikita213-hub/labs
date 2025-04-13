@@ -24,7 +24,6 @@ void checkIsOdd() {
 } 
 
 int main() {
-    printf("%d", 9&5);
     char validChars[2] = {'1', '2'};
     char choice = getValidatedCharInput("Choose the task: 1-first taks, 2 - second task: ", validChars, 2);
     if (choice == '1') checkIsOdd();

@@ -21,4 +21,5 @@ void Push(int val, Stack * stack);
 Node * Pop(Stack * stack);
 void PrintStack(Stack * stack);
 void FillStack(Stack * stack);
+void freeStack(Stack * stack);
 #endif
