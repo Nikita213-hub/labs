@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 #include "validators.h"
 #include "Dequeue.h"
 
@@ -103,28 +104,27 @@ void FreeDequeue(Dequeue* dq) {
 }
 
 void FillDequeue(Dequeue* dq) {
-int counter = 0;
+    int counter = 0;
     char input;
-    int remaining = dq->Maxlen;
     
-    while (remaining > 0) {
+    while (1) {
         input = getValidatedCharInputE("Enter character: ", NULL, 0);
+        if (input == -1) return; 
         if (counter % 2 == 0) {
             if (dq->Len >= dq->Maxlen) {
-                DeqNode* dequeued = DequeueBack(dq);
-                free(dequeued);
-            }
-            EnqueueHead(dq, input);
-        } else {
-            if (dq->Len >= dq->Maxlen) {
-                DeqNode* dequeued = DequeueHead(dq);
-                free(dequeued);
+                DeqNode* removed = DequeueHead(dq); 
+                free(removed);
             }
             EnqueueBack(dq, input);
+        } else {
+            if (dq->Len >= dq->Maxlen) {
+                DeqNode* removed = DequeueBack(dq);
+                free(removed);
+            }
+            EnqueueHead(dq, input);
         }
-        printf("Current dequeue (%d/%d): ", dq->Len, dq->Maxlen);
+        printf("Deque (%d/%d): ", dq->Len, dq->Maxlen);
         PrintDequeue(dq);
         counter++;
-        remaining--;
     }
 }

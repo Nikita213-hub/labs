@@ -17,6 +17,10 @@ int getValidatedIntInput(const char *message)
         int rawBufferLen = 0;
         while ((a = getchar()) != '\n')
         {
+            if(tolower(a) == 'q') {
+                while((getchar()) != '\n');
+                return INT_MIN;
+            }
             rawBufferLen++;
             if(valueLen == 0 && a == '-')
             {
@@ -69,10 +73,6 @@ char getValidatedCharInputE(const char *message, char validChars[], int validCha
     while (1) {
         printf("%s", message);
         if (scanf(" %c", &input) == 1) {
-            if(input == tolower('q')) {
-                while (getchar() != '\n');
-                return -1;
-            }
             bool hasInvalidExtra = false;
             int c;
             while ((c = getchar()) != '\n' && c != EOF) {

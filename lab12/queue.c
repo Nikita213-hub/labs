@@ -70,13 +70,21 @@ void FreeQueue(Queue * q) {
 }
 
 void FillQueue(Queue * q) {
-    int len = q->Maxlen;
     int counter = 0;
-    while(len > 0) {
-        Enqueue(q, getValidatedCharInputE("Input any char value: ", NULL, 0));
-        if(++counter > 3) {
+    
+    while(1) {
+        char input = getValidatedCharInputE("Input any char value: ", NULL, 0);
+        if(input == -1) break;
+
+
+        if(q->Len >= q->Maxlen) {
+            Dequeu(q);
+        }
+
+        Enqueue(q, input);
+        counter++;
+        if(counter >= 3) {
             printf("The left symbol: %c\n", q->Head->Val);
         }
-        len--;
     }
 }

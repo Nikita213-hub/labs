@@ -8,7 +8,7 @@
 
 int main() {
     int taskChoice = -1;
-    while((taskChoice=getValidatedIntInput("Menu: \n Task # 1 - Press 1 \n Task # 2 - Press 2 \n Task # 3 - Press 3 \n Exit - Press 0 \nInput number of a task: ")) != 0) {
+    while((taskChoice=getValidatedIntInput("Menu: \n Insert queue - Press 1 \n Insert dequeue - Press 2 \n Parse string - Press 3 \n Exit - Press 0 \nInput number of a task: ")) != 0) {
         switch (taskChoice)
         {
         case 1:

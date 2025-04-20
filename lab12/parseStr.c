@@ -28,38 +28,53 @@ int isNum(char * el) {
 
 IntQueue * extractNumsFromStr(char * str) {
     if (!str) return NULL;
-    int count = 0;
-    int in_token = 0;
-
-
+    int num_count = 0;
+    int in_number = 0;
     const char* p = str;
     while (*p) {
-        if (isspace(*p)) {
-            in_token = 0;
+        if (isdigit(*p)) {
+            if (!in_number) {
+                num_count++;
+                in_number = 1;
+            }
         } else {
-            if (!in_token) (count)++;
-            in_token = 1;
+            in_number = 0;
         }
         p++;
     }
-    IntQueue * q = NewIntQueue(count);
-    p = str;
-    while (*p) {
-        while (*p && isspace(*p)) p++;
-        if (!*p) break;
-        const char* start = p;
-        while (*p && !isspace(*p)) p++;
-        int len = p - start;
+    IntQueue* q = NewIntQueue(num_count);
+    if (!q) return NULL;
 
-        char* token = malloc(sizeof(char) * (len + 1));
-        if (!token) {
-            return NULL;
+    p = str;
+    in_number = 0;
+    const char* num_start = NULL;
+
+    while (*p) {
+        if (isdigit(*p)) {
+            if (!in_number) {
+                num_start = p;
+                in_number = 1;
+            }
+        } else {
+            if (in_number) {
+                int len = p - num_start;
+                char* num_str = malloc(len + 1);
+                memcpy(num_str, num_start, len);
+                num_str[len] = '\0';
+                EnqueueInt(q, atoi(num_str));
+                free(num_str);
+                in_number = 0;
+            }
         }
-        memcpy(token, start, len);
-        token[len] = '\0';
-        if(isNum(token)) {
-            EnqueueInt(q, atoi(token));
-        }
+        p++;
+    }
+    if (in_number) {
+        int len = p - num_start;
+        char* num_str = malloc(len + 1);
+        memcpy(num_str, num_start, len);
+        num_str[len] = '\0';
+        EnqueueInt(q, atoi(num_str));
+        free(num_str);
     }
     return q;
 }
