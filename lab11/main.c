@@ -7,49 +7,7 @@
 #include "util.h"
 #include "txtReaderWriter.h"
 #include "Errors.h"
-
-int sumStack(Stack * stack) {
-    Node*temp = Pop(stack);
-    int sum = 0;
-    while(temp != NULL) {
-        sum+=temp->Val;
-        printf("Val summed: %d\n", temp->Val);
-        temp = Pop(stack);
-    }
-    return sum;
-}
-
-Stack * mergeStacks(Stack * s1, Stack * s2) {
-    Node * currNodeS1 = s1->Head;
-    Node * currNodeS2 = s2->Head;
-    Node * mergedStackHead = malloc(sizeof(Node));
-    Stack * mergedStack = malloc(sizeof(Stack));
-    mergedStack->Head = mergedStackHead;
-    mergedStack->MaxLen = s1->Len + s2->Len;
-    while(mergedStack->Len < mergedStack->MaxLen) {
-        if(currNodeS1->Val <= currNodeS2->Val) {
-            Push(currNodeS1->Val, mergedStack);
-            currNodeS1 = currNodeS1->Prev;
-            if(mergedStack->Len == mergedStack->MaxLen-1){
-                Push(currNodeS2->Val, mergedStack);
-            }
-            continue;
-        }
-        Push(currNodeS2->Val, mergedStack);
-        currNodeS2 = currNodeS2->Prev;
-        if(mergedStack->Len == mergedStack->MaxLen-1){
-                Push(currNodeS1->Val, mergedStack);
-        }
-    }
-    return mergedStack;
-}
-
-void ptrI(char * str) {
-    while(*str != '\0'){
-        printf("%c", *str);
-        str++;
-    }
-}
+#include "RPN.h"
 
 
 int main() {
@@ -85,20 +43,9 @@ int main() {
             printf("Error occured when opening file\n");
             return 1;
         }
-        char line[1024];
-        char * postfixStr = malloc(sizeof(char) * 1024);
-        int currLine = 0;
-        while(readLine(fpExpr, line)) {
-            currLine++;
-            errorsList * errors = convertInfixToPostfix(line, postfixStr, currLine);
-            if (isErrors(errors)) {
-                printErrors(errors);
-                continue;
-            }
-            float t = calcWithRPN(postfixStr);
-            writeLine(fpRes, t);
-        }
-        free(postfixStr);
+        
+        processExpressions(fpExpr, fpRes);
+
         free(resFileName);
         free(exprFileName);
         fclose(fpExpr);

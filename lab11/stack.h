@@ -8,13 +8,12 @@ typedef struct Node {
 
 typedef struct {
     int Len;
-    int MaxLen;
     Node* Head;
 }Stack;
 typedef enum {
-    DEFAULT = 0,
-    INCREASING,
+    INCREASING = 0,
     DECREASING,
+    CHAOTIC,
 } fillingType;
 Stack * newStack();
 void Push(int val, Stack * stack);
@@ -22,4 +21,8 @@ Node * Pop(Stack * stack);
 void PrintStack(Stack * stack);
 void FillStack(Stack * stack);
 void freeStack(Stack * stack);
+
+int sumStack(Stack * stack);
+Stack * mergeStacks(Stack * s1, Stack * s2);
+
 #endif
